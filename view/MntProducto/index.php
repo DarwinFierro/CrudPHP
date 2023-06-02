@@ -21,7 +21,7 @@
     <link href="../../public/css/sb-admin-2.min.css" rel="stylesheet">
 
     <link href="../../public/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <link href="../../public/datatables/buttons.dataTables.min.css" rel="stylesheet"/>
+    <link href="../../public/datatables/buttons.dataTables.min.css" rel="stylesheet" />
 
 </head>
 
@@ -303,6 +303,7 @@
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Mantenimiento de Producto</h6>
                             </div>
+                            <button id="btnNuevo" class="btn btn-facebook btn-block">Nuevo Registro</button>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="producto_data" width="100%" cellspacing="0">
@@ -368,6 +369,8 @@
         </div>
     </div>
 
+    <?php require_once("modalmantenimiento.php"); ?>
+
     <!-- Bootstrap core JavaScript-->
     <script src="../../public/vendor/jquery/jquery.min.js"></script>
     <script src="../../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -385,12 +388,14 @@
     <!-- Page level custom scripts -->
     <script src="../../public/js/demo/datatables-demo.js"></script>
 
-    <script src="mntproducto.js"></script>
-
     <script src="../../public/datatables/dataTables.buttons.min.js"></script>
     <script src="../../public/datatables/buttons.html5.min.js"></script>
     <script src="../../public/datatables/buttons.colVis.min.js"></script>
     <script src="../../public/datatables/jszip.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="mntproducto.js"></script>
 
 </body>
 
