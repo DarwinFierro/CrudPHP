@@ -9,8 +9,22 @@
                     <input type="hidden" id="prod_id" name="prod_id">
 
                     <div class="form-group">
+                        <label class="form-label" for="cat_id">Categoria</label>
+                        <select class="form-control" id="cat_id" name="cat_id"> 
+                    </select>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label" for="prod_nom">Nombre</label>
                         <input type="text" class="form-control" id="prod_nom" name="prod_nom" placeholder="Ingrese Nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="prod_desc">Descripcion</label>
+                        <textarea class="form-control" name="prod_desc" id="prod_desc" rows="3" placeholder="Ingrese Descripcion" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="prod_desc">Cantidad</label>
+                        <input type="number" class="form-control" name="prod_can" id="prod_can" min="0">
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -42,7 +42,10 @@
                                     <table class="table table-bordered" id="producto_data" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
+                                                <th>Categoria</th>
                                                 <th>Nombre</th>
+                                                <th>Descripcion</th>
+                                                <th>Cantidad</th>
                                                 <th>Editar</th>
                                                 <th>Eliminar</th>
                                             </tr>
