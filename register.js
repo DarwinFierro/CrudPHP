@@ -37,16 +37,31 @@ document.getElementById("btnLoginGoogle").addEventListener("click", function () 
       .catch(function (error) {
         console.log(error);
       });
-  });
+});
 
+  function checkSession() {
+    // Realizar una solicitud AJAX para verificar la sesión en el servidor
+    $.ajax({
+      url: 'config/session.php?action=check',
+      method: 'GET',
+      success: function(response) {
+        // Verificar la respuesta del servidor
+        if (response === 'true') {
+          window.location.href = 'http://localhost:80/CrudPHP/view/home/';
+        } else {
+          init();
+        }
+      },
+      error: function() {
+        // Manejar el error de la solicitud AJAX
+        console.log('Error al verificar la sesión');
+      }
+    });
+  }
 function init() {}
 
 $(document).ready(function () {
-    // Verifica si el usuario ha iniciado sesión
-    if (localStorage.getItem("loggedIn")) {
-      // Redirige al usuario a la página de inicio de sesión
-      window.location.href = "view/home/";
-    }
+  checkSession()
   $("#lblMensaje").hide();
   $("#lblError").hide();
 });

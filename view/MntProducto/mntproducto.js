@@ -1,63 +1,32 @@
 var tabla;
 
 function checkSession() {
+  // Realizar una solicitud AJAX para verificar la sesión en el servidor
   $.ajax({
-    url: "../../config/session.php?action=check",
-    method: "GET",
-    success: function () {
-      console.log("sesion activa pendejo");
+    url: '../../config/session.php?action=check',
+    method: 'GET',
+    success: function(response) {
+      // Verificar la respuesta del servidor
+      if (response === 'true') {
+        // La sesión está activa, continúa cargando la página
+        init();
+      } else {
+        // La sesión no está activa, redirige al usuario a la página de inicio de sesión
+        window.location.href = 'http://localhost:80/CrudPHP/';
+      }
     },
-    error: function () {
-      // Redirige al usuario a la página de inicio de sesión
-      window.location.href = "http://localhost:80/CrudPHP/";
-    }
-  });
-}
-
-function renewSession() {
-  $.ajax({
-    url: "../../config/session.php?action=renew",
-    method: "GET",
-    success: function () {
-      // La sesión se renovó exitosamente
-      console.log("Sesión renovada");
-
-      // Programa la próxima renovación basada en el tiempo límite de la sesión
-      scheduleSessionRenewal();
-    },
-    error: function () {
-      // Error al renovar la sesión
-      console.log("Error al renovar la sesión");
-    }
-  });
-}
-
-function scheduleSessionRenewal() {
-  // Obtiene el tiempo límite de la sesión del servidor (en segundos)
-  $.ajax({
-    url: "../../config/session.php?action=getExpiryTime",
-    method: "GET",
-    success: function (response) {
-      // Convierte el tiempo límite de la sesión a milisegundos
-      var expiryTime = parseInt(response) * 1000;
-
-      // Programa la próxima renovación basada en el tiempo límite de la sesión
-      setTimeout(renewSession, expiryTime);
-    },
-    error: function () {
-      // Error al obtener el tiempo límite de la sesión
-      console.log("Error al obtener el tiempo límite de la sesión");
+    error: function() {
+      // Manejar el error de la solicitud AJAX
+      console.log('Error al verificar la sesión');
     }
   });
 }
 
 function init() {
-  checkSession();
-  scheduleSessionRenewal();
 }
 
 $(document).ready(function () {
-  
+  checkSession();
   $.post("../../controller/categoria.php?op=combo", function (data) {
     $("#cat_id").html(data);
   });

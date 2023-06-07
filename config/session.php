@@ -10,15 +10,16 @@ function createSession($username){
   // Establece la sesión como activa
   $_SESSION['loggedIn'] = true;
 }
-
-function checkSession(){
-  if (!isset($_SESSION['loggedIn'])) {
-    // Redirige al usuario a la página de inicio de sesión
-    header("Location: http://localhost:80/CrudPHP/");
-    exit;
+function checkSession() {
+  // Verificar si existe una variable de sesión que indique que el usuario está autenticado
+  if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true) {
+    // La sesión está activa
+    echo 'true';
+  } else {
+    // La sesión no está activa
+    echo 'false';
   }
 }
-
 function destroySession(){
   // Elimina todas las variables de sesión
   $_SESSION = array();
@@ -36,5 +37,6 @@ switch ($_GET['action']) {
     break;
   case 'logout':
     destroySession();
+    break;
 }
 ?>

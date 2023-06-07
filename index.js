@@ -38,6 +38,26 @@ document.getElementById("btnLoginGoogle").addEventListener("click", function () 
       });
 });
 
+function checkSession() {
+  // Realizar una solicitud AJAX para verificar la sesión en el servidor
+  $.ajax({
+    url: 'config/session.php?action=check',
+    method: 'GET',
+    success: function(response) {
+      // Verificar la respuesta del servidor
+      if (response === 'true') {
+        window.location.href = 'http://localhost:80/CrudPHP/view/home/';
+      } else {
+        init();
+      }
+    },
+    error: function() {
+      // Manejar el error de la solicitud AJAX
+      console.log('Error al verificar la sesión');
+    }
+  });
+}
+
 function createSession(username) {
   $.ajax({
     url: "config/session.php?action=create",
@@ -58,6 +78,7 @@ function init() {
 }
 
 $(document).ready(function () {
+  checkSession();
   $("#lblMensaje").hide();
   $("#lblError").hide();
   $("#lblRegistro").hide();
