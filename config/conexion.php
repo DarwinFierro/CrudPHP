@@ -16,5 +16,9 @@
 			return $this->dbh->query("SET NAMES 'utf8'");
         }
 
+        public function ruta(){
+            return "http://localhost:80/CrudPHP/";
+        }
+
     }
 ?>

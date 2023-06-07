@@ -1,14 +1,64 @@
 var tabla;
 
+function checkSession() {
+  $.ajax({
+    url: "../../config/session.php?action=check",
+    method: "GET",
+    success: function () {
+      console.log("sesion activa pendejo");
+    },
+    error: function () {
+      // Redirige al usuario a la página de inicio de sesión
+      window.location.href = "http://localhost:80/CrudPHP/";
+    }
+  });
+}
+
+function renewSession() {
+  $.ajax({
+    url: "../../config/session.php?action=renew",
+    method: "GET",
+    success: function () {
+      // La sesión se renovó exitosamente
+      console.log("Sesión renovada");
+
+      // Programa la próxima renovación basada en el tiempo límite de la sesión
+      scheduleSessionRenewal();
+    },
+    error: function () {
+      // Error al renovar la sesión
+      console.log("Error al renovar la sesión");
+    }
+  });
+}
+
+function scheduleSessionRenewal() {
+  // Obtiene el tiempo límite de la sesión del servidor (en segundos)
+  $.ajax({
+    url: "../../config/session.php?action=getExpiryTime",
+    method: "GET",
+    success: function (response) {
+      // Convierte el tiempo límite de la sesión a milisegundos
+      var expiryTime = parseInt(response) * 1000;
+
+      // Programa la próxima renovación basada en el tiempo límite de la sesión
+      setTimeout(renewSession, expiryTime);
+    },
+    error: function () {
+      // Error al obtener el tiempo límite de la sesión
+      console.log("Error al obtener el tiempo límite de la sesión");
+    }
+  });
+}
+
 function init() {
-    $("#producto_form").on("submit",function(e){
-        guardaryeditar(e);	
-    });
+  checkSession();
+  scheduleSessionRenewal();
 }
 
 $(document).ready(function () {
-
-  $.post("../../controller/categoria.php?op=combo",function(data){
+  
+  $.post("../../controller/categoria.php?op=combo", function (data) {
     $("#cat_id").html(data);
   });
   tabla = $("#producto_data")
@@ -60,27 +110,22 @@ $(document).ready(function () {
     .DataTable();
 });
 
-function guardaryeditar(e){
+function guardaryeditar(e) {
   e.preventDefault();
   var formData = new FormData($("#producto_form")[0]);
   $.ajax({
-      url: "../../controller/producto.php?op=guardaryeditar",
-      type: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(datos){
+    url: "../../controller/producto.php?op=guardaryeditar",
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function (datos) {
+      $("#producto_form")[0].reset();
+      $("#modalmantenimiento").modal("hide");
+      $("#producto_data").DataTable().ajax.reload();
 
-          $('#producto_form')[0].reset();
-          $("#modalmantenimiento").modal('hide');
-          $('#producto_data').DataTable().ajax.reload();
-
-          swal.fire(
-              'Registro!',
-              'El registro correctamente.',
-              'success'
-          )
-      }
+      swal.fire("Registro!", "El registro correctamente.", "success");
+    },
   });
 }
 
@@ -102,39 +147,54 @@ function eliminar(prod_id) {
           { prod_id: prod_id },
           function (data) {}
         );
-        $('#producto_data').DataTable().ajax.reload();
+        $("#producto_data").DataTable().ajax.reload();
         swal.fire("Deleted!", "Your file has been deleted.", "success");
       } else if (
         /* Read more about handling dismissals below */
         result.dismiss === Swal.DismissReason.cancel
       ) {
-        swal.fire(
-          "Cancelled",
-          "Your imaginary file is safe :)",
-          "error"
-        );
+        swal.fire("Cancelled", "Your imaginary file is safe :)", "error");
       }
     });
 }
 
 function editar(prod_id) {
-    $("#mdltitulo").html("Editar Registro");
-    $.post("../../controller/producto.php?op=mostrar",{ prod_id: prod_id },function (data) {
-        data = JSON.parse(data);
-        $('#prod_id').val(data.prod_id);
-        $('#prod_can').val(data.prod_can);
-        $('#cat_id').val(data.cat_id);
-        $('#prod_nom').val(data.prod_nom);
-        $('#prod_desc').val(data.prod_desc);
-      });
-    $("#modalmantenimiento").modal("show");
+  $("#mdltitulo").html("Editar Registro");
+  $.post(
+    "../../controller/producto.php?op=mostrar",
+    { prod_id: prod_id },
+    function (data) {
+      data = JSON.parse(data);
+      $("#prod_id").val(data.prod_id);
+      $("#prod_can").val(data.prod_can);
+      $("#cat_id").val(data.cat_id);
+      $("#prod_nom").val(data.prod_nom);
+      $("#prod_desc").val(data.prod_desc);
+    }
+  );
+  $("#modalmantenimiento").modal("show");
 }
 
 $(document).on("click", "#btnNuevo", function () {
   $("#mdltitulo").html("Nuevo Registro");
-  $('#producto_form')[0].reset();
-  $('#prod_id').val('');
+  $("#producto_form")[0].reset();
+  $("#prod_id").val("");
   $("#modalmantenimiento").modal("show");
+});
+
+$(document).on("click", "#BotonCancelar", function () {
+  $.ajax({
+    url: '../../config/session.php?action=logout',
+    method: 'GET',
+    success: function() {
+      // Redirigir al usuario a la página de inicio de sesión
+      window.location.href = 'http://localhost:80/CrudPHP/';
+    },
+    error: function() {
+      // Manejar el error de la solicitud AJAX
+      console.log('Error al cerrar sesión');
+    }
+  });
 });
 
 init();
